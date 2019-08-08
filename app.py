@@ -8,7 +8,7 @@ class Doc_Game():
         self.windows_size = 500
         self.dist =  self.windows_size // (self.tam + 1)
         self.matrix()
-        
+
         self.win = pygame.display.set_mode((self.windows_size,self.windows_size))
         pygame.display.set_caption("Doc Box Game")
         self.run = True
@@ -37,6 +37,8 @@ class Doc_Game():
                     #Toggle user
                     self.change_player()
 
+                    self.show_matrix()
+
                 # print(event)
 
             #Show the board to play
@@ -58,25 +60,29 @@ class Doc_Game():
                     next_x = self.position_points[i][j+1][0]
                     next_y = self.position_points[i][j+1][1]
                 
-                    #HORIZONTAl
+                    #=====================HORIZONTAl=====================
                     if (y_click >= y -rango) and (y_click <= y+rango): 
                         if (x_click >= x) and (x_click <= next_x):
                             if self.evaluate_lines(x, y,next_x, y):    
                                 self.lines.append( (x, y,next_x, y ))
                                 pygame.draw.line(self.win, self.color, [x, y], [next_x, y], 2)
-
+                                self.top_botton[i,j] = 1
                                 pygame.display.update()
                                 return
-                    next_y = self.position_points[i+1][j][1]      
-                    #VERTICAL
+                    next_y = self.position_points[i+1][j][1]    
+
+
+                    #=====================VERTICAL=====================
                     if (x_click >= x - rango) and (x_click <= x+rango): 
                         # print("Vertical\n(Points= x:{}, y:{}), NEXT = (x+1:{}, y+1:{}), USER =( x:{}, user y:{})".format(x, y, next_x, next_y, x_click, y_click))
                         if (y_click >= y) and (y_click <= next_y):
                             if self.evaluate_lines(x, y, x, next_y):
                                 self.lines.append( (x, y, x, next_y ))
                                 pygame.draw.line(self.win, self.color, [x, y], [x,next_y], 2)
+                                self.left_right[i,j] = 1
                                 pygame.display.update()
                                 return
+                    #=====================VERTICAL ERROR =====================                    
                 except:
                     final_point_x = self.position_points[i][-1][0]
                     final_point_y = self.position_points[i][-1][1]
@@ -92,6 +98,8 @@ class Doc_Game():
                                 if self.evaluate_lines(final_point_x, y, final_point_x, next_y):
                                     self.lines.append( (final_point_x, y, final_point_x, next_y ))
                                     pygame.draw.line(self.win, self.color, [final_point_x, y], [final_point_x,next_y], 2)
+                                    self.left_right[i,j] = 1
+                                    
                                     pygame.display.update()
 #============================================================
     def draw_points(self, radius = 5):
@@ -134,6 +142,17 @@ class Doc_Game():
     def matrix(self):
         self.left_right = np.zeros( (self.tam -1, self.tam) )
         self.top_botton = np.zeros( (self.tam, self.tam -1) ) 
+#===========================================================
+    def rotate_matrix(self):
+        print("============================")
+        print("LEFTRIGHT\n",self.left_right)
+        print("TRANSPOSE\n", np.transpose(self.top_botton))
+        print("============================")
+
+#===========================================================
+    def show_matrix(self):
+        print(self.left_right)
+        print(self.top_botton)
 
 #===========================================================
     def change_player(self):
@@ -147,5 +166,5 @@ class Doc_Game():
         pygame.quit()
 #===========================================================
 
-game = Doc_Game(10)
+game = Doc_Game(4)
 game.play()
