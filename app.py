@@ -18,6 +18,10 @@ class Doc_Game():
         self.player1 = False
         self.player2 = False
 
+        self.points_player1 = 0
+        self.points_player2 = 0
+
+
         self.lines = []
 
         self.toggle_player(True)
@@ -34,10 +38,19 @@ class Doc_Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     #draw the line
                     self.draw_line(pygame.mouse.get_pos())
+                    
+                    #sum points
+                    self.sum_points()
+                    
                     #Toggle user
                     self.change_player()
 
+                    #show matrix
                     self.show_matrix()
+                    
+                    
+
+                    
 
                 # print(event)
 
@@ -119,12 +132,14 @@ class Doc_Game():
         if gamer:
             # print("Player 1")
             self.color = (255,0,0)
+            self.c1 = 'Red'
             self.player1 = True
             self.player2 = False
         else:
             # print("Player 2"
 
             self.color = (0,255,0)
+            self.c2 = 'Green'
             self.player2 = True
             self.player1 = False
 #===========================================================
@@ -153,10 +168,23 @@ class Doc_Game():
     def show_matrix(self):
         print(self.left_right)
         print(self.top_botton)
-
+#===========================================================
+    def sum_points(self):
+        for i, horizontal_line in enumerate(self.left_right):
+            for j in range(1, len(horizontal_line)):
+                if horizontal_line[j-1] == 1 and horizontal_line[j] == 1:
+                    if self.top_botton[i][j-1] == 1 and self.top_botton[i+1][j-1]:
+                        if self.player1:
+                            self.points_player1 += 1
+                        else:
+                            self.points_player2 += 1
+                        
+                        self.left_right[i][j-1] = -1
+                        #show points
+                        print("Points: {}, Player {}".format(self.points_player1, self.c1))
+                        print("Points: {}, Player {}".format(self.points_player2, self.c2))
 #===========================================================
     def change_player(self):
-        
         if self.player1:
             self.toggle_player()
         else:
