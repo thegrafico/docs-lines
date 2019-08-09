@@ -25,15 +25,15 @@ class Doc_Game():
         self.white = (255,255,255)
 
         self.font = pygame.font.SysFont("arial", 15)
-        self.text1 = self.font.render("Player 1: ", True, self.white)
+        self.text1 = self.font.render("  RED: ", True, self.white)
         self.win.blit(self.text1, (0,0))
 
-        self.text2 = self.font.render("Player 2: ", True, self.white)
+        self.text2 = self.font.render("GREEN: ", True, self.white)
         self.win.blit(self.text2, (self.windows_size - (self.text2.get_width() *2), 0))
 
 
         self.show_points(0, (0,0), self.text1.get_width() )
-        self.show_points(0, (self.windows_size - (self.text2.get_width() *2), 0), self.text2.get_width())
+        self.show_points(0, (self.windows_size - (self.text2.get_width() * 2),0), self.text2.get_width() )
         
         # self.show_points(0, (self.windows_size - text.get_width()), text2.get_width())
 
@@ -57,8 +57,8 @@ class Doc_Game():
                     #sum points
                     self.sum_points()
 
-                    #Toggle user
-                    self.change_player()
+                    self.clean_player([self.windows_size // 2, 0])
+
 
                     #show matrix
                     # self.show_matrix()
@@ -94,22 +94,32 @@ class Doc_Game():
                                 #store the position where line going to be draw
                                 self.lines.append( (x, y,next_x, y ))
                                 
+                                self.change_player()
+
                                 #draw the line
                                 pygame.draw.line(self.win, self.color, [x, y], [next_x, y], 2)
                                 
                                 #fill up the matrix
                                 self.top_botton[i,j] = 1  
-
+                                
                                 return
                     #=====================VERTICAL=====================
                     next_y = self.position_points[i+1][j][1]   
 
                     if (x_click >= x - rango) and (x_click <= x+rango): 
                         # print("Vertical\n(Points= x:{}, y:{}), NEXT = (x+1:{}, y+1:{}), USER =( x:{}, user y:{})".format(x, y, next_x, next_y, x_click, y_click))
-                        if (y_click >= y) and (y_click <= next_y):
+                        if (y_click >= y + 10) and (y_click <= next_y - 10):
+                            print("Click: {},{}, Range: {}, {}".format(x_click, y_click, y - rango , y+rango))
                             if self.evaluate_lines(x, y, x, next_y):
                                 self.lines.append( (x, y, x, next_y ))
+
+                                #Toggle user
+                                self.change_player()
+
+                                #Draw the line
                                 pygame.draw.line(self.win, self.color, [x, y], [x,next_y], 2)
+                                
+                                #Store the value in the matrix
                                 self.left_right[i,j] = 1
                                 return
                     #=====================VERTICAL ERROR =====================                    
@@ -127,8 +137,12 @@ class Doc_Game():
                                 # print("Points ({}, {}), Click ({}, {}), Next ({}, {})".format(x, y, x_click, y_click,final_point_x, next_y))# final_point_x, x_click, y_click))
                                 if self.evaluate_lines(final_point_x, y, final_point_x, next_y):
                                     self.lines.append( (final_point_x, y, final_point_x, next_y ))
+                                    self.change_player()
+
                                     pygame.draw.line(self.win, self.color, [final_point_x, y], [final_point_x,next_y], 2)
                                     self.left_right[i,j] = 1
+                                    
+                                    #Toggle user
 #============================================================
     def draw_points(self, radius = 5):
         arr_points = []
@@ -163,8 +177,6 @@ class Doc_Game():
         for line in self.lines:
             if points == line:
                 print("User is clicking line with color")
-                # print(points, line)
-                self.change_player()
                 return False
         #since if reach here, change the user
         #Toggle user
@@ -189,10 +201,15 @@ class Doc_Game():
                                 pygame.display.update()
 
                             self.points_player1 += 1
+
                             self.show_points(self.points_player1, (0,0), self.text1.get_width())
                         else:
+
+                            for x in range(10):
+                                self.remove_text(self.points_player2, (self.windows_size - (self.text2.get_width() * 2) + self.text2.get_width() , 0))
+
                             self.points_player2 += 1                            
-                        
+                            self.show_points(self.points_player2, (self.windows_size - (self.text2.get_width() * 2), 0), self.text2.get_width() )
                         self.fill_square( (i, j-1), (i,j), (i+1, j-1))
                         
                         self.left_right[i][j-1] = -1
@@ -223,17 +240,20 @@ class Doc_Game():
     def remove_text(self, point, text_position):
         text = self.font.render("{}".format(point), True, self.black)
         self.win.blit(text, (text_position[0], text_position[1]))
-        # pygame.display.update()
-
+        
     def show_points(self, points, text_position, text_width):
         text = self.font.render("{}".format(points), True, self.white)
-        self.win.blit(text, (text_width, text_position[1]) )
+        self.win.blit(text, (text_position[0] + text_width, text_position[1]) )
+        pygame.display.update()
 #===========================================================
     def change_player(self):
         if self.player1:
             self.toggle_player()
         else:
             self.toggle_player(True)
+#===========================================================
+    def clean_player(self, pos):
+        pygame.draw.rect(self.win, self.color, [pos[0] - self.dist//2, pos[1], self.dist + self.dist//2,self.dist//2])
 #===========================================================
     def exit(self):
         pygame.quit()
