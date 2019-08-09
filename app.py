@@ -21,6 +21,15 @@ class Doc_Game():
         self.points_player1 = 0
         self.points_player2 = 0
 
+        self.black = (0,0,0)
+        self.white = (255,255,255)
+
+        self.font = pygame.font.SysFont("comicsansms", 18)
+        self.font.set_bold(False)
+
+        self.update_text("Player 1", 0, 5)
+        self.update_text("Player 2", 0, 1.3)
+
 
         self.lines = []
 
@@ -46,12 +55,7 @@ class Doc_Game():
                     self.change_player()
 
                     #show matrix
-                    self.show_matrix()
-                    
-                    
-
-                    
-
+                    # self.show_matrix()
                 # print(event)
 
             #Show the board to play
@@ -74,8 +78,8 @@ class Doc_Game():
                     next_y = self.position_points[i][j+1][1]
                 
                     #=====================HORIZONTAl=====================
-                    if (y_click >= y -rango) and (y_click <= y+rango): 
-                        if (x_click >= x) and (x_click <= next_x):
+                    if (y_click >= y - rango) and (y_click <= y+rango): 
+                        if (x_click >= x + 5) and (x_click <= next_x -5):
                             if self.evaluate_lines(x, y,next_x, y):    
                                 self.lines.append( (x, y,next_x, y ))
                                 pygame.draw.line(self.win, self.color, [x, y], [next_x, y], 2)
@@ -156,43 +160,81 @@ class Doc_Game():
 #===========================================================
     def matrix(self):
         self.left_right = np.zeros( (self.tam -1, self.tam) )
-        self.top_botton = np.zeros( (self.tam, self.tam -1) ) 
-#===========================================================
-    def rotate_matrix(self):
-        print("============================")
-        print("LEFTRIGHT\n",self.left_right)
-        print("TRANSPOSE\n", np.transpose(self.top_botton))
-        print("============================")
-
+        self.top_botton = np.zeros( (self.tam, self.tam -1) )
 #===========================================================
     def show_matrix(self):
         print(self.left_right)
         print(self.top_botton)
 #===========================================================
     def sum_points(self):
-        for i, horizontal_line in enumerate(self.left_right):
-            for j in range(1, len(horizontal_line)):
-                if horizontal_line[j-1] == 1 and horizontal_line[j] == 1:
+        for i, vertical_line in enumerate(self.left_right):
+            for j in range(1, len(vertical_line)):
+                if vertical_line[j-1] == 1 and (vertical_line[j] == 1 or vertical_line[j] == -1):
                     if self.top_botton[i][j-1] == 1 and self.top_botton[i+1][j-1]:
                         if self.player1:
+                            self.remove_text("Player 1",self.points_player1, 5)               
                             self.points_player1 += 1
+                            # self.update_text("Player 1",self.points_player1, 5)               
                         else:
-                            self.points_player2 += 1
+                            self.remove_text("Player 1", self.points_player2, 1.3)               
+                            self.points_player2 += 1                            
+                            # self.update_text("Player 1",self.points_player2, 1.3) 
+                        
+                        self.fill_square( (i, j-1), (i,j), (i+1, j-1))
                         
                         self.left_right[i][j-1] = -1
-                        #show points
-                        print("Points: {}, Player {}".format(self.points_player1, self.c1))
-                        print("Points: {}, Player {}".format(self.points_player2, self.c2))
+                        # #show points
+                        # print("Points: {}, Player {}".format(self.points_player1, self.c1))
+                        # print("Points: {}, Player {}".format(self.points_player2, self.c2))
+                        # print("======================================")
+                        # for pos in self.position_points:
+                        #     print(pos)
+                        # print("======================================")
+#===========================================================
+    def fill_square(self, p1, p2, p3):
+        point1 = (self.windows_size / (len(self.position_points[0]) + 1 ))
+        
+        #first point
+        fp1 = point1 + p1[0] * (point1)
+        fp2 = point1 + p1[1] * (point1)
+
+        # #Second point
+        # sp1 = point1 + p2[0] * (point1)
+        # sp2 = point1 + p2[1] * (point1)
+
+        # #Four point
+        # fop1 = point1 + p3[0] * (point1)
+        # fop2 = point1 + p3[1] * (point1)
+
+        # #3r point
+        # tp1 = sp2        
+        # tp2 = fop1 
+
+        pygame.draw.rect(self.win, self.color, [fp2 + point1//4 , fp1 + point1//4, point1//2, point1//2])
+        pygame.display.update()
+        # print("Point 1", fp1, fp2)
+#===========================================================
+    def remove_text(self, text, previus, distance):
+        text = self.font.render("{}: {}".format(text, previus), True, self.black)
+        self.win.blit(text, (self.windows_size //distance - text.get_width() // 2, self.dist//2 - text.get_height() // 2))
+        pygame.display.update()
+
+    def update_text(self, text, points, distance):
+        text = self.font.render("{}: {}".format(text, points), True, self.white)
+        
+        print("POS", text.get_rect())
+        self.win.blit(text, (self.windows_size //distance - text.get_width() // 2, self.dist//2 - text.get_height() // 2))
+        pygame.display.update()
 #===========================================================
     def change_player(self):
         if self.player1:
             self.toggle_player()
         else:
             self.toggle_player(True)
-
+#===========================================================
     def exit(self):
         pygame.quit()
 #===========================================================
 
-game = Doc_Game(4)
+game = Doc_Game(10)
 game.play()
