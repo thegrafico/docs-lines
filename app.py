@@ -32,8 +32,8 @@ class Doc_Game():
         self.win.blit(self.text2, (self.windows_size - (self.text2.get_width() *2), 0))
 
 
-        self.show_points(0, (0,0), self.text1.get_width())
-        self.show_points(0, (self.windows_size - (self.text2.get_width() *2), self.text2.get_width()))
+        self.show_points(0, (0,0), self.text1.get_width() )
+        self.show_points(0, (self.windows_size - (self.text2.get_width() *2), 0), self.text2.get_width())
         
         # self.show_points(0, (self.windows_size - text.get_width()), text2.get_width())
 
