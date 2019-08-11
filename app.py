@@ -305,7 +305,7 @@ class Doc_Game():
         """
         Sum points to the user who end fill a box
         """
-
+        change = False
         #Iterate trought the matrix that have all the position of the lines verticaly
         for i, vertical_line in enumerate(self.left_right):
             for j in range(1, len(vertical_line)):
@@ -341,14 +341,16 @@ class Doc_Game():
                                 
                         #if the user get the box fill up, draw a box with the color of the user
                         self.fill_square( (i, j-1))
-
-                        #Toggle user
-                        self.change_player()
                         
                         self.left_right[i][j-1] = -1
                         
+                        change = True
                         #Toggle user
                         # self.toggle_player()
+        if change:
+            # Toggle user
+            self.change_player()
+            
 
 #===========================================================
     def fill_square(self, p1):
