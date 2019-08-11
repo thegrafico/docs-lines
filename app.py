@@ -2,7 +2,7 @@
 Author: Raul Pichardo Avalo
 Date: August 2019
 
-Docs and Box Game
+Dots and Box Game
 Take more boxes than your opponent. You move by connecting two dots with a line. 
 When you place the last ‘wall’ of a single square (box), the box is yours. The players 
 move in turn, but whenever a player takes a box (s)he must move again. The board game 
@@ -10,13 +10,13 @@ ends when all 25 boxes have been taken. The player with the most boxes wins.
 
 When all four of the lines around a single box are in place, the player who 
 made the last move owns the box. The box is marked in that player’s color and 
-(s)he must move again. In the end phase the board game can look like this:
+(s)he must move again.
 """
 
 import pygame
 import numpy as np
 
-class Doc_Game():
+class Dots_Game():
     def __init__(self, tam):
         pygame.init()
         """
@@ -412,5 +412,6 @@ class Doc_Game():
 #===========================================================
 
 #Start playing
-game = Doc_Game(10)
+#the board is 10x10
+game = Dots_Game(10)
 game.play()
