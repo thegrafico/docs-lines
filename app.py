@@ -106,9 +106,11 @@ class Doc_Game():
                 self.draw_points()
                 self.load_box = False
             
-            #update the screen game
-            pygame.display.update()
-            
+            try:
+                #update the screen game
+                pygame.display.update()
+            except:
+                pass
 #============================================================
     def draw_line(self, position):
         """
@@ -257,13 +259,14 @@ class Doc_Game():
         if gamer:
             # print("Player 1")
             self.color = (255,0,0)
+            self.color_next_player = (0,255,0)
             self.c1 = 'Red'
             self.player1 = True
             self.player2 = False
         else:
             # print("Player 2"
-
             self.color = (0,255,0)
+            self.color_next_player = (255,0,0)
             self.c2 = 'Green'
             self.player2 = True
             self.player1 = False
@@ -335,13 +338,18 @@ class Doc_Game():
                             
                             #show points of player 2
                             self.show_points(self.points_player2, (self.windows_size - (self.text2.get_width() * 2), 0), self.text2.get_width() )
-                        
+                                
                         #if the user get the box fill up, draw a box with the color of the user
                         self.fill_square( (i, j-1))
 
-                        self.toggle_player()
+                        #Toggle user
+                        self.change_player()
                         
                         self.left_right[i][j-1] = -1
+                        
+                        #Toggle user
+                        # self.toggle_player()
+
 #===========================================================
     def fill_square(self, p1):
         """
@@ -392,7 +400,7 @@ class Doc_Game():
         """
         Draw a rect in the middle of the screen with the color of the player who play. 
         """
-        pygame.draw.rect(self.win, self.color, [pos[0] - self.dist//2, pos[1], self.dist + self.dist//2,self.dist//2])
+        pygame.draw.rect(self.win, self.color_next_player, [pos[0] - self.dist//2, pos[1], self.dist + self.dist//2,self.dist//2])
 #===========================================================
     def exit(self):
         """
