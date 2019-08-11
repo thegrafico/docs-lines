@@ -10,7 +10,6 @@ When all four of the lines around a single box are in place, the player who
 made the last move owns the box. The box is marked in that player’s color and 
 (s)he must move again.
 
-
 [Read more here](https://www.yourturnmyturn.com/rules/dotsandboxes.php)
 
 ## Requirements
