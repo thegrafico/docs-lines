@@ -14,6 +14,7 @@ made the last move owns the box. The box is marked in that player’s color and
 
 ## Requirements
 Python version 3 >=
+
 pip version 3 >=
 
 ## Usage
